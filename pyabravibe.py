@@ -2,6 +2,8 @@
 """
 Python version of Anders Brandt AbraVibe Matlab Toolbox
 
+Compatible Python 3.5.7
+
 ABRAVIBE
 A MATLAB/Octave toolbox for Noise and Vibration Analysis and Teaching
 Revision 1.2
@@ -11,18 +13,38 @@ Department of Technology and Innovation
 University of Southern Denmark
 abra@iti.sdu.dk
 
-
 Converted to Python by
 
 Arnaud Dessein
 Siemens Gamesa Renewable Energy A/S
-arnaud.dessein@siemens.com
+arnaud.dessein@siemensgamesa.com
+
+Uasge :
+    from pyabravibe import pyabravibe as pa
+    pa.alinspec()
+
+
+License : GNU GPL Version 3
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 """
 
 import numpy as np
 from math import pi
 from numpy.linalg import inv
-from scipy import linalg
+from scipy import linalg, signal
+from scipy.interpolate import interp1d
 
 
 def alinspec(y, fs, w, M=1, ovlp=0):
@@ -419,3 +441,192 @@ def mck2modal(*args):
             V = np.vstack((V[np.arange(0,m/2,dtype=int)],V[np.arange(0,n,2)]))
             Prop = 0
     return (p, V, Prop)
+
+
+def makexaxis(y, dx, x0=0):
+    """
+    %MAKEXAXIS Create a time or frequency x axis
+    %
+    %           x = makexaxis(y,dx,x0);
+    %
+    %           y       Y axis
+    %           dx      x increment
+    %           x0      Start x value (default = 0)
+    %
+    % This command can be used to create an x axis for time data as for example
+    % t=makexaxis(y,1/fs) if fs is the sampling frequency, and start is 0 sec.
+    % or for a spectrum by using
+    % f=makexaxis(Y,fs/N)
+    % if Y is a spectrum using blocksize N, starting at 0 Hz.
+
+    % Copyright (c) 2009-2011 by Anders Brandt
+    % Email: abra@iti.sdu.dk
+    % Version: 1.0 2011-06-23
+    % This file is part of ABRAVIBE Toolbox for NVA
+    %
+    """
+
+    N = len(y)
+    return np.linsace(x0, x0+(N-1)*dx, N)
+
+
+def synchsampt(x, fs, tacho, TLevel, Slope, PPR, MaxOrd):
+    """
+    % SYNCHSAMPT   Resample data synchronously with RPM, based on tacho signal
+    %
+    %       [xs,rpm, tc] = synchsampt(x,fs,tacho,TLevel,Slope,PPR,MaxOrd)
+    %
+    %       xs          Synchronously sampled data
+    %       tc          x axis for xs in cycles
+    %
+    %       x           Time data
+    %       fs          Sampling frequency for x
+    %       tacho       Tacho signal, sampled with frequency fs
+    %       TLevel      Trig level
+    %       Slope       Slope, +1 or -1 for positive and negative slope, respectively
+    %       PPR         Pulses per revolution of tacho signal
+    %       MaxOrd      Maximum order to be able to track (gives number of samples per
+    %                   revolution)
+
+
+    % Copyright (c) 2009-2011 by Anders Brandt
+    % Email: abra@iti.sdu.dk
+    % Version: 1.0 2011-06-23
+    %          1.1 2013-02-02 Updated syntax description
+    % This file is part of ABRAVIBE Toolbox for NVA
+    """
+
+    FilterL = 7
+    SampPerRev = 2 * MaxOrd
+
+    # Find tacho instances
+    #=======================================
+    # Define time axis for tacho signal
+    t = makexaxis(tacho, 1/fs)
+    # Get trigger times
+    xDiff = np.diff(np.sign(tacho-TLevel))     # Produces +/- 2 where trigger event
+    tDiff = t[1:]                              # Diff shifts one sample
+    if Slope > 0:
+        tTacho = tDiff(np.where(xDiff == 2))         # Tacho positive slope instances
+    else:
+        tTacho = tDiff(np.where(xDiff == -2))        # Tacho negative slope instances
+
+    #=======================================
+    # Calculate rpm from time between tacho pulses. Assign rpm to second tacho
+    # pulse of each pair
+    rpmt = 60.0/PPR/np.diff(tTacho)              # Instantaneous rpm values
+    tTacho = tTacho[1:]                   # diff again shifts one sample
+    # Smooth to obtain more stable values
+    a = 1
+    b = 1.0/FilterL*np.ones(FilterL)
+    rpm = signal.filtfilt(b, a, rpmt)                 # This is rpm(t)
+
+    #=======================================
+    # Now to the synchronuous sampling part:
+    # Take only first tacho pulse for each revolution, so we have one tacho
+    # pulse per revolution
+    tTacho=tTacho[::PPR]
+    # New sampling instances should now be at SampPerRev evenly spaced points
+    # between the two tacho pulses. The last sample, however, should be "one
+    # sample before" it reaches the next tacho pulse, to obtain a continuous
+    # signal
+    ts=[]
+    for n in range(len(tTacho)-1):
+        tt = np.linspace(tTacho[n],tTacho[n+1],SampPerRev+1)
+        ts = np.append(ts,tt[:-1])
+
+    # Now resample x on these new time points
+    # First upsample x
+    x = signal.resample(x, 10*len(x))
+    fs = 10*fs
+    tr = makexaxis(x, 1.0/fs)
+
+    # Resample original (upsampled) signal onto the angularly spread samples
+    xs = interp1d(tr, x, kind='linear', fill_value='extrapolate')(ts)
+    # Find the instantaneous rpm values for each ts
+    rpm = interp1d(tTacho, rpm, kind='linear')(ts)
+    # Define tc in cycles
+    tc = makexaxis(xs, 1.0/SampPerRev)
+
+def amac(**args):
+    # @todo : TEST ME
+    """
+    % AMAC  Calculate Modal Assurance Critera matrix M from two mode sets
+    %
+    %       M = amac(V1,V2)
+    %
+    %       M           MAC matrix
+    %
+    %       V1          First mode shape matrix with modes in columns
+    %       V2          Second mode shape matrix (optional)
+    %
+    % M = amac(V1)      produces an auto MAC (V1 vs. V1 shapes)
+    % M = amac(V1,V2)   produces a cross MAC
+    %
+    % The number of modes do not need to be the same, but the number of rows in
+    % both matrices (DOFs) must (of course) be the same
+
+    % Copyright (c) 2009-2011 by Anders Brandt
+    % Email: abra@iti.sdu.dk
+    % Version: 1.0 2011-06-23
+    % This file is part of ABRAVIBE Toolbox for NVA
+    """
+    if len(args) == 1:
+        V1 = args[0]
+        V2 = V1
+    if len(args) == 2:
+        V1 = args[0]
+        V2 = args[1]
+    else:
+        raise(ValueError)
+
+    (N1, M1) = V1.shape()
+    (N2, M2) = V2.shape()
+
+    M = np.ndarray((M1,M2), np.double)
+
+    for m1 in range(M1):
+        for m2 in range(M2):
+            M[m1,m2] = ( np.abs(V1[:,m1].dot(V2[:,m2]))**2 /
+                         np.abs(V1[:,m1].dot(V1[:,m1]))    /
+                         np.abs(V2[:,m2].dot(V2[:,m2]))
+                       )
+
+    return M
+
+def amif(*args):
+    # @todo : TEST ME
+    """
+    % AMIF   Calculate mode indicator function of (accelerance) FRFs
+    %
+    %       Mif = amif(H,Type)
+    %
+    %       Mif     Mode indicator function(s)
+    %
+    %       H       Frequency response, can be single function or matrix up to
+    %               3D dimensions N-by-D-by-R
+    %       Type    String with MIF type:
+    %               'mif1'  produces mif 1 (sum(imag)^2/sum(abs)^2 type)
+    %               'power' produces sum(abs(H)^2)
+    %               'mvmif' produces multivariate mif (Default) (multireference)
+    %               'mrmif' produces modified real mif (multireference)
+    %               'cmif'  produces the complex mif (which is real, as the others)
+
+    % Copyright (c) 2009-2011 by Anders Brandt
+    % Email: abra@iti.sdu.dk
+    % Version: 1.0 2011-06-23
+    %          1.1 2012-04-04 Changed default to 'mvmif'
+    % This file is part of ABRAVIBE Toolbox for NVA
+
+    % Reference:
+    % Rades, M.: A Comparison of Some Mode Indicator Functions, Mechanical
+    % Systems and Signal Processing, 1994, 8, p. 459-474
+    """
+    if len(args) == 1:
+        V1 = args[0]
+        V2 = V1
+    if len(args) == 2:
+        V1 = args[0]
+        V2 = args[1]
+    else:
+        raise(ValueError)
