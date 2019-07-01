@@ -119,11 +119,11 @@ def alinspec(y, fs, w, M=1, ovlp=0):
         n = 1                        # Next block number
         i1 = n*K               # Index into y
         i2 = i1+N
-        while n <= M:
+        while n < M:
             y_tmp = _y[i1:i2, vec]
             Y = acf*np.fft.fft(np.multiply(y_tmp, w))/N
             # Linear average accumulation
-            Pyy[:, vec] = (n-1)/n*Pyy[:, vec]+np.square(np.abs(Y))/n
+            Pyy[:, vec] = n/(n+1)*Pyy[:, vec]+np.square(np.abs(Y))/(n+1)
             n = n+1
             i1 = n*K           # Index into x
             i2 = i1+N
@@ -211,7 +211,6 @@ def alinspecp(y, x, fs, w, M=1, ovlp=0):
         i2 = i1+N
         y_tmp = _y[i1:i2, vec]
         x_tmp = x[i1:i2]
-#        print(len(y_tmp),len(w))
         Y = acf*np.fft.fft(np.multiply(y_tmp, w)/N)      # Scaled, windowed FFT
         YX = np.multiply(np.fft.fft(y_tmp), np.conj(np.fft.fft(x_tmp)))
         Pyy[:, vec] = np.square(np.abs(Y))      # Window (amplitude) correction
@@ -223,8 +222,8 @@ def alinspecp(y, x, fs, w, M=1, ovlp=0):
             y_tmp = _y[i1:i2, vec]
             Y = acf*np.fft.fft(np.multiply(y_tmp, w))/N
             # Linear average accumulation
-            Pyy[:, vec] = (n-1)/n*Pyy[:, vec]+np.square(np.abs(Y))/n
-            Pyx[:, vec] = (n-1)/n*Pyx[:, vec]+(YX)/n
+            Pyy[:, vec] = n/(n+1)*Pyy[:, vec]+np.square(np.abs(Y))/(n+1)
+            Pyx[:, vec] = n/(n+1)*Pyx[:, vec]+(YX)/(n+1)
             n = n+1
             i1 = n*K           # Index into x
             i2 = i1+N
