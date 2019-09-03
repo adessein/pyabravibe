@@ -49,38 +49,38 @@ from scipy.interpolate import interp1d
 
 def alinspec(y, fs, w, M=1, ovlp=0):
     """
-    %ALINSPEC Calculate linear (rms) spectrum from time data
-    %
-    %           [Lyy,f] = alinspec(y,fs,w,M,ovlp)
-    %
-    %           Lyy         Linear spectrum of time signal y
-    %           f           Frequency vector for Pyy, N/2+1-by-1
-    %
-    %           y           Time data in column vector(s). If more than one
-    %                       column, each column is treated separately
-    %           fs          Sampling frequency for y
-    %           w           Time window with length(FFT blocksize), power of 2
-    %                       (1024, 2048,...)
-    %           M           Number of averages (FFTs), default is 1
-    %           ovlp        Overlap in percent, default is 0
-    %
-    %           D           Number of vectors (columns) in y
-    %
-    % Example:
-    %           [Lyy,f]=alinspec(y,1000,aflattop(1024),10,50)
-    % Computes a linear spectrum using a flattop window with 1024 blocksize, 10
-    % averages, with 50% overlap
-    %
-    % ALINSPEC produces a linear, rms weighted spectrum as if y was a periodic
-    % signal. A peak in Lyy is interpreted as a sine at that frequency with an
-    % RMS value corresponding to the peak value in Lyy.
-    %
-    % See also winacf apsdw ahann aflattop
+    ALINSPEC Calculate linear (rms) spectrum from time data
+    
+              [Lyy,f] = alinspec(y,fs,w,M,ovlp)
+    
+              Lyy         Linear spectrum of time signal y
+              f           Frequency vector for Pyy, N/2+1-by-1
+    
+              y           Time data in column vector(s). If more than one
+                          column, each column is treated separately
+              fs          Sampling frequency for y
+              w           Time window with length(FFT blocksize), power of 2
+                          (1024, 2048,...)
+              M           Number of averages (FFTs), default is 1
+              ovlp        Overlap in percent, default is 0
+    
+              D           Number of vectors (columns) in y
+    
+    Example:
+              [Lyy,f]=alinspec(y,1000,aflattop(1024),10,50)
+    Computes a linear spectrum using a flattop window with 1024 blocksize, 10
+    averages, with 50 overlap
+    
+    ALINSPEC produces a linear, rms weighted spectrum as if y was a periodic
+    signal. A peak in Lyy is interpreted as a sine at that frequency with an
+    RMS value corresponding to the peak value in Lyy.
+    
+    See also winacf apsdw ahann aflattop
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+    This file is part of ABRAVIBE Toolbox for NVA
     """
 
     # Make copy of input arrays in order to preserve them
@@ -138,41 +138,41 @@ def alinspec(y, fs, w, M=1, ovlp=0):
 
 def alinspecp(y, x, fs, w, M=1, ovlp=0):
     """
-    %ALINSPECP Calculate linear (rms) spectrum of time data, with phase
-    %
-    %           [Lyx,f] = alinspecp(y,x,fs,w,M,ovlp)
-    %
-    %           Lyx        Linear spectrum of time signal y with phase from Gyx
-    %           f          Frequency vector for Lyx, N/2+1-by-1
-    %
-    %           y          Time data in column vector(s). If more than one
-    %                      column, each column is treated separately
-    %           x          Time data for phase reference
-    %           fs         Sampling frequency for y
-    %           w          Time window with length(FFT blocksize), power of 2
-    %                      (1024, 2048,...)
-    %           M          Number of averages (FFTs), default is 1
-    %           ovlp       Overlap in percent, default is 0
-    %
-    %           D          Number of vectors (columns) in y
-    %
-    % Example:
-    %           [Lyx,f]=alinspecp(y,x,1000,aflattop(1024),10,50)
-    %
-    % ALINSPECP produces a linear, rms weighted spectrum as if y was a periodic
-    % signal. A peak in Lyx is interpreted as a sine at that frequency with an
-    % RMS value corresponding to the peak value in Lyx and with phase relative
-    % to signal x.
-    %
-    % See also alinspec winacf apsdw ahann aflattop
+    ALINSPECP Calculate linear (rms) spectrum of time data, with phase
+    
+              [Lyx,f] = alinspecp(y,x,fs,w,M,ovlp)
+    
+              Lyx        Linear spectrum of time signal y with phase from Gyx
+              f          Frequency vector for Lyx, N/2+1-by-1
+    
+              y          Time data in column vector(s). If more than one
+                         column, each column is treated separately
+              x          Time data for phase reference
+              fs         Sampling frequency for y
+              w          Time window with length(FFT blocksize), power of 2
+                         (1024, 2048,...)
+              M          Number of averages (FFTs), default is 1
+              ovlp       Overlap in percent, default is 0
+    
+              D          Number of vectors (columns) in y
+    
+    Example:
+              [Lyx,f]=alinspecp(y,x,1000,aflattop(1024),10,50)
+    
+    ALINSPECP produces a linear, rms weighted spectrum as if y was a periodic
+    signal. A peak in Lyx is interpreted as a sine at that frequency with an
+    RMS value corresponding to the peak value in Lyx and with phase relative
+    to signal x.
+    
+    See also alinspec winacf apsdw ahann aflattop
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    %          1.1 2011-10-07 Fixed new syntax, was not working
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+             1.1 2011-10-07 Fixed new syntax, was not working
+    This file is part of ABRAVIBE Toolbox for NVA
 
-    % Set up depending on input parameters
+    Set up depending on input parameters
     """
 
     # Make copy of input arrays in order to preserve them
@@ -244,38 +244,38 @@ def alinspecp(y, x, fs, w, M=1, ovlp=0):
 
 def mck2frf(f, M, C, K, indof=(0,), outdof=(0,), typefrf='v'):
     """
-    %MCK2FRF Calculate FRF(s) from M, C, K matrices
-    %
-    %       H = mck2frf(f,M,C,K,indof,outdof,type)
-    %
-    %               H       Frequency response matrix in [(m/s)/N] (matrix) N-by-D-by-R
-    %               N       length(f), number of frequency values
-    %               D       length(outdof), number of responses
-    %               R       length(indof), number of references (inputs)
-    %
-    %               f       Frequency vector in [Hz]
-    %               M       Mass matrix in [kg]
-    %               C       Damping matrix in [Ns/m]
-    %               K       Stiffness matrix in m/N
-    %               indof   Input DOF(s), may be a vector for many reference
-    %                       DOFs, (default = (0,)
-    %               outdof  Output DOF(2) may be a vector for many responses
-    %                       (default = (0,)
-    %               typefrf Type of output FRF as string:
-    %                       'Flexibility' or 'd' generates displacement/force
-    %                       'Mobility' or 'v'    generates velocity/force (Default)
-    %                       'Accelerance' or 'a' generates acceleration/force
-    % Example:
-    %               H = mck2frf(f,M,C,K,[1 2 4],[5:12],'v');
-    %
-    % Calculates mobilities with columns corresponding to force in
-    % DOFs 1, 2, and 4, and responses in DOFs 5 to 12. H will in this case be
-    % of dimension (N, 8, 3) where N is the number of frequency values.
+    MCK2FRF Calculate FRF(s) from M, C, K matrices
+    
+          H = mck2frf(f,M,C,K,indof,outdof,type)
+    
+                  H       Frequency response matrix in [(m/s)/N] (matrix) N-by-D-by-R
+                  N       length(f), number of frequency values
+                  D       length(outdof), number of responses
+                  R       length(indof), number of references (inputs)
+    
+                  f       Frequency vector in [Hz]
+                  M       Mass matrix in [kg]
+                  C       Damping matrix in [Ns/m]
+                  K       Stiffness matrix in m/N
+                  indof   Input DOF(s), may be a vector for many reference
+                          DOFs, (default = (0,)
+                  outdof  Output DOF(2) may be a vector for many responses
+                          (default = (0,)
+                  typefrf Type of output FRF as string:
+                          'Flexibility' or 'd' generates displacement/force
+                          'Mobility' or 'v'    generates velocity/force (Default)
+                          'Accelerance' or 'a' generates acceleration/force
+    Example:
+                  H = mck2frf(f,M,C,K,[1 2 4],[5:12],'v');
+    
+    Calculates mobilities with columns corresponding to force in
+    DOFs 1, 2, and 4, and responses in DOFs 5 to 12. H will in this case be
+    of dimension (N, 8, 3) where N is the number of frequency values.
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+    This file is part of ABRAVIBE Toolbox for NVA
     """
 
     # Parse Input Parameters
@@ -323,49 +323,49 @@ def mck2frf(f, M, C, K, indof=(0,), outdof=(0,), typefrf='v'):
 
 def mck2modal(*args):
     """
-    % MCK2MODAL     Compute modal model (poles and mode shapes) from M,(C),K
-    %
-    %       p       Column vector with poles, (or eigenfrequencies if undamped) in rad/s
-    %       V       Matrix with mode shapes in columns
-    %       Prop    Logical, 1 if C is proportional damping, otherwise 0
-    %
-    %       M       Mass matrix
-    %       C       (Optional) viscous damping matrix
-    %       K       Stiffness matrix
-    %
-    % [p,V] = mck2modal(M,K) solves for the undamped system and returns
-    % eigenfrequencies as purely imaginary poles (in rad/s), and mode shapes (normal modes).
-    %
-    % [p,V] = mck2modal(M,C,K) solves for the poles and mode shapes. If the
-    % damping matrix C=aM+bK for konstants a and b, i.e. the system exhibits
-    % proportional damping, then the undamped system is solved for mode shapes,
-    % and the poles are calculated from the uncoupled equations in modal
-    % coordinates. If the damping is not proportional, a general state space
-    % formulation is used to find the (complex) mode shapes and poles.
-    %
-    % NOTE: The list of poles is limited to the poles with positive imaginary
-    % part, as the other half of the poles can easily be calculated as the
-    % complex conjugates of the first ones.
-    %
-    % Mode shape scaling:
-    % Undamped mode shapes (normal modes) are scaled to unity modal mass
-    % Mode shapes calculated with damping are scaled to unity modal A.
-    % This means that the modal scaling constant, Qr = 1, that is, that all
-    % residues are Apqr=psi_p*psi_q
-    % This also means that the mode shapes are complex even for
-    % proportionally damped case, but it is the most convenient scaling.
-    %
-    % See also UMA2UMM
+    MCK2MODAL     Compute modal model (poles and mode shapes) from M,(C),K
+    
+          p       Column vector with poles, (or eigenfrequencies if undamped) in rad/s
+          V       Matrix with mode shapes in columns
+          Prop    Logical, 1 if C is proportional damping, otherwise 0
+    
+          M       Mass matrix
+          C       (Optional) viscous damping matrix
+          K       Stiffness matrix
+    
+    [p,V] = mck2modal(M,K) solves for the undamped system and returns
+    eigenfrequencies as purely imaginary poles (in rad/s), and mode shapes (normal modes).
+    
+    [p,V] = mck2modal(M,C,K) solves for the poles and mode shapes. If the
+    damping matrix C=aM+bK for konstants a and b, i.e. the system exhibits
+    proportional damping, then the undamped system is solved for mode shapes,
+    and the poles are calculated from the uncoupled equations in modal
+    coordinates. If the damping is not proportional, a general state space
+    formulation is used to find the (complex) mode shapes and poles.
+    
+    NOTE: The list of poles is limited to the poles with positive imaginary
+    part, as the other half of the poles can easily be calculated as the
+    complex conjugates of the first ones.
+    
+    Mode shape scaling:
+    Undamped mode shapes (normal modes) are scaled to unity modal mass
+    Mode shapes calculated with damping are scaled to unity modal A.
+    This means that the modal scaling constant, Qr = 1, that is, that all
+    residues are Apqr=psi_p*psi_q
+    This also means that the mode shapes are complex even for
+    proportionally damped case, but it is the most convenient scaling.
+    
+    See also UMA2UMM
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+    This file is part of ABRAVIBE Toolbox for NVA
 
-    % Note: The way we solve the various systems in this file are not
-    % at all necessary, but is done for pedagogical reasons.
-    % In principal the state space formulation could be used in all cases,
-    % and would yield correct results.
+    Note: The way we solve the various systems in this file are not
+    at all necessary, but is done for pedagogical reasons.
+    In principal the state space formulation could be used in all cases,
+    and would yield correct results.
     """
 
     if len(args) == 2:      # Undamped case
@@ -444,25 +444,25 @@ def mck2modal(*args):
 
 def makexaxis(y, dx, x0=0):
     """
-    %MAKEXAXIS Create a time or frequency x axis
-    %
-    %           x = makexaxis(y,dx,x0);
-    %
-    %           y       Y axis
-    %           dx      x increment
-    %           x0      Start x value (default = 0)
-    %
-    % This command can be used to create an x axis for time data as for example
-    % t=makexaxis(y,1/fs) if fs is the sampling frequency, and start is 0 sec.
-    % or for a spectrum by using
-    % f=makexaxis(Y,fs/N)
-    % if Y is a spectrum using blocksize N, starting at 0 Hz.
+    MAKEXAXIS Create a time or frequency x axis
+    
+              x = makexaxis(y,dx,x0);
+    
+              y       Y axis
+              dx      x increment
+              x0      Start x value (default = 0)
+    
+    This command can be used to create an x axis for time data as for example
+    t=makexaxis(y,1/fs) if fs is the sampling frequency, and start is 0 sec.
+    or for a spectrum by using
+    f=makexaxis(Y,fs/N)
+    if Y is a spectrum using blocksize N, starting at 0 Hz.
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    % This file is part of ABRAVIBE Toolbox for NVA
-    %
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+    This file is part of ABRAVIBE Toolbox for NVA
+    
     """
 
     N = len(y)
@@ -471,28 +471,28 @@ def makexaxis(y, dx, x0=0):
 
 def synchsampt(x, fs, tacho, TLevel, Slope, PPR, MaxOrd):
     """
-    % SYNCHSAMPT   Resample data synchronously with RPM, based on tacho signal
-    %
-    %       [xs,rpm, tc] = synchsampt(x,fs,tacho,TLevel,Slope,PPR,MaxOrd)
-    %
-    %       xs          Synchronously sampled data
-    %       tc          x axis for xs in cycles
-    %
-    %       x           Time data
-    %       fs          Sampling frequency for x
-    %       tacho       Tacho signal, sampled with frequency fs
-    %       TLevel      Trig level
-    %       Slope       Slope, +1 or -1 for positive and negative slope, respectively
-    %       PPR         Pulses per revolution of tacho signal
-    %       MaxOrd      Maximum order to be able to track (gives number of samples per
-    %                   revolution)
+    SYNCHSAMPT   Resample data synchronously with RPM, based on tacho signal
+    
+           [xs,rpm, tc] = synchsampt(x,fs,tacho,TLevel,Slope,PPR,MaxOrd)
+    
+           xs          Synchronously sampled data
+           tc          x axis for xs in cycles
+    
+           x           Time data
+           fs          Sampling frequency for x
+           tacho       Tacho signal, sampled with frequency fs
+           TLevel      Trig level
+           Slope       Slope, +1 or -1 for positive and negative slope, respectively
+           PPR         Pulses per revolution of tacho signal
+           MaxOrd      Maximum order to be able to track (gives number of samples per
+                       revolution)
 
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    %          1.1 2013-02-02 Updated syntax description
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+             1.1 2013-02-02 Updated syntax description
+    This file is part of ABRAVIBE Toolbox for NVA
     """
 
     FilterL = 7
@@ -550,25 +550,25 @@ def synchsampt(x, fs, tacho, TLevel, Slope, PPR, MaxOrd):
 def amac(**args):
     # @todo : TEST ME
     """
-    % AMAC  Calculate Modal Assurance Critera matrix M from two mode sets
-    %
-    %       M = amac(V1,V2)
-    %
-    %       M           MAC matrix
-    %
-    %       V1          First mode shape matrix with modes in columns
-    %       V2          Second mode shape matrix (optional)
-    %
-    % M = amac(V1)      produces an auto MAC (V1 vs. V1 shapes)
-    % M = amac(V1,V2)   produces a cross MAC
-    %
-    % The number of modes do not need to be the same, but the number of rows in
-    % both matrices (DOFs) must (of course) be the same
+    AMAC  Calculate Modal Assurance Critera matrix M from two mode sets
+    
+          M = amac(V1,V2)
+    
+          M           MAC matrix
+    
+          V1          First mode shape matrix with modes in columns
+          V2          Second mode shape matrix (optional)
+    
+    M = amac(V1)      produces an auto MAC (V1 vs. V1 shapes)
+    M = amac(V1,V2)   produces a cross MAC
+    
+    The number of modes do not need to be the same, but the number of rows in
+    both matrices (DOFs) must (of course) be the same
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+    This file is part of ABRAVIBE Toolbox for NVA
     """
     if len(args) == 1:
         V1 = args[0]
@@ -596,30 +596,30 @@ def amac(**args):
 def amif(*args):
     # @todo : TEST ME
     """
-    % AMIF   Calculate mode indicator function of (accelerance) FRFs
-    %
-    %       Mif = amif(H,Type)
-    %
-    %       Mif     Mode indicator function(s)
-    %
-    %       H       Frequency response, can be single function or matrix up to
-    %               3D dimensions N-by-D-by-R
-    %       Type    String with MIF type:
-    %               'mif1'  produces mif 1 (sum(imag)^2/sum(abs)^2 type)
-    %               'power' produces sum(abs(H)^2)
-    %               'mvmif' produces multivariate mif (Default) (multireference)
-    %               'mrmif' produces modified real mif (multireference)
-    %               'cmif'  produces the complex mif (which is real, as the others)
+    AMIF   Calculate mode indicator function of (accelerance) FRFs
+    
+          Mif = amif(H,Type)
+    
+          Mif     Mode indicator function(s)
+    
+          H       Frequency response, can be single function or matrix up to
+                  3D dimensions N-by-D-by-R
+          Type    String with MIF type:
+                  'mif1'  produces mif 1 (sum(imag)^2/sum(abs)^2 type)
+                  'power' produces sum(abs(H)^2)
+                  'mvmif' produces multivariate mif (Default) (multireference)
+                  'mrmif' produces modified real mif (multireference)
+                  'cmif'  produces the complex mif (which is real, as the others)
 
-    % Copyright (c) 2009-2011 by Anders Brandt
-    % Email: abra@iti.sdu.dk
-    % Version: 1.0 2011-06-23
-    %          1.1 2012-04-04 Changed default to 'mvmif'
-    % This file is part of ABRAVIBE Toolbox for NVA
+    Copyright (c) 2009-2011 by Anders Brandt
+    Email: abra@iti.sdu.dk
+    Version: 1.0 2011-06-23
+             1.1 2012-04-04 Changed default to 'mvmif'
+    This file is part of ABRAVIBE Toolbox for NVA
 
-    % Reference:
-    % Rades, M.: A Comparison of Some Mode Indicator Functions, Mechanical
-    % Systems and Signal Processing, 1994, 8, p. 459-474
+    Reference:
+    Rades, M.: A Comparison of Some Mode Indicator Functions, Mechanical
+    Systems and Signal Processing, 1994, 8, p. 459-474
     """
     if len(args) == 1:
         V1 = args[0]
